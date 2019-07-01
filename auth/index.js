@@ -15,7 +15,6 @@ var User = mongoose.model('User');
 function ensureAuthenticated(req, res, next) {
 
   if ( !req.headers.authorization ) {
-    //request('https://api.telegram.org/bot649391874:AAE2wcormDvQUV7i7bHpf22Tn5hnywGvag4/sendMessage?chat_id=551764233&text=Unauthorized attempt');
     return res.status(401).jsonp({ message: "Necesita autorización" });
   }
 
