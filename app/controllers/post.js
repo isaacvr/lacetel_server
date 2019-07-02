@@ -128,7 +128,6 @@ var express      = require('express');
 var Influx       = require('influxdb-nodejs');
 var bcrypt       = require('bcrypt-nodejs');
 
-var objPath      = require('../utils/object-path');
 var influxToJSON = require('../utils/influx-to-json');
 var service      = require('../../auth/tokenService');
 var config       = require('../../config/config');
@@ -141,7 +140,7 @@ const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
 
 router.post('/api/login', function(req, res) {
 
-  var { body } = req;
+  var body = req.body;
 
   // console.log('BODY: ', body);
 
@@ -153,8 +152,7 @@ router.post('/api/login', function(req, res) {
         username: body.username,
         email: body.username
       }, 'or')
-      .then((raw) => objPath(raw, ['results', '0', 'series', '0']))
-      .then((influxData) => influxToJSON(influxData))
+      .then(influxToJSON)
       .then((users) => {
 
         console.log("USERS: ", users);
