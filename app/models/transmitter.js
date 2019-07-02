@@ -4,13 +4,19 @@
 
 'use strict';
 
-var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
+const fieldSchema = {
+  name: 's',
+  region: 's',
+  id: 's',  
+};
 
-var TransmitterSchema = new Schema({
-  name  : { type: String, required: true },
-  region: { type: String, required: true },
-  id    : { type: String, required: true }
-});
+const tagSchema = {
+};
 
-mongoose.model('Transmitter', TransmitterSchema);
+const name = 'Transmitter';
+
+module.exports = function(influx) {
+  influx.schema(name, fieldSchema, tagSchema, {
+    stripUnknown: true,
+  });
+};
