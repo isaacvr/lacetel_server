@@ -4,7 +4,27 @@
 
 'use strict';
 
-var mongoose = require('mongoose');
+const fieldSchema = {
+  id: 's',
+  lat: 'i',
+  lon: 'i',
+  val: 'i',
+  lastSeen: 's',
+  auth: 'b',
+};
+
+const tagSchema = {
+};
+
+const name = 'Sensor';
+
+module.exports = function(influx) {
+  influx.schema(name, fieldSchema, tagSchema, {
+    stripUnknown: true,
+  });
+};
+
+/*var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var SensorSchema = new Schema({
@@ -16,4 +36,4 @@ var SensorSchema = new Schema({
   auth    : { type: Boolean                              }, /// Si está autorizado o no el sensor
 });
 
-mongoose.model('Sensor', SensorSchema);
+mongoose.model('Sensor', SensorSchema);*/
