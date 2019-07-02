@@ -3,12 +3,26 @@
  */
 
 'use strict';
+const fieldSchema = {
+  name: 's',
+};
 
-var mongoose = require('mongoose');
+const tagSchema = {
+};
+
+const name = 'Region';
+
+module.exports = function(influx) {
+  influx.schema(name, fieldSchema, tagSchema, {
+    stripUnknown: true,
+  });
+};
+
+/*var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
 
 var RegionSchema = new Schema({
   name  : { type: String, required: true },
 });
 
-mongoose.model('Region', RegionSchema);
+mongoose.model('Region', RegionSchema);*/
