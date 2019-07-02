@@ -127,6 +127,7 @@
 var express      = require('express');
 var Influx       = require('influxdb-nodejs');
 var bcrypt       = require('bcrypt-nodejs');
+var moment       = require('moment');
 
 var influxToJSON = require('../utils/influx-to-json');
 var service      = require('../../auth/tokenService');

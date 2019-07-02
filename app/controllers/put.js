@@ -6,9 +6,13 @@
 
 /// Dependencies
 var express      = require('express');
-var mongoose     = require('mongoose');
+var moment       = require('moment');
+var Influx       = require('influxdb-nodejs');
+var config       = require('../../config/config');
+var influxToJSON = require('../utils/influx-to-json');
+//var mongoose     = require('mongoose');
 var bcrypt       = require('bcrypt-nodejs');
-mongoose.Promise = require('bluebird');
+//mongoose.Promise = require('bluebird');
 
 /// Router
 var router      = express.Router();
