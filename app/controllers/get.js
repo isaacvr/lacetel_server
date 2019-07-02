@@ -31,7 +31,7 @@ router.get('/api/users', /*ensureAuth, minLeven(UserCategories.moderador),*/ fun
 
 router.get('/api/user/:username', /*ensureAuth,*/ function(req, res) {
 
-  console.log(req.params.username);
+  console.log("PARAMS: ", req.params.username);
 
   influx
     .query('User')
