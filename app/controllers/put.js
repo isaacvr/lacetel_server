@@ -17,6 +17,10 @@ var bcrypt = require('bcrypt-nodejs');
 /// Router
 var router = express.Router();
 
+const db = config.db;
+const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+
+
 /// Database models
 //var User        = mongoose.model('User');
 //var Sensor      = mongoose.model('Sensor');
@@ -152,38 +156,18 @@ router.put('/api/modifyUser', function (req, res) {
   }
 
   if (body.email) {
-
-    User.findOne({
-      email: body.email
-    }).exec(function (err, user) {
-
-      if (err) {
-        return res.status(500).jsonp({ message: "Error en el servidor" });
-      }
-
-      if (user) {
-
-        for (var i in body) {
-          if (body.hasOwnProperty(i)) {
-            user[i] = body[i];
-          }
-        }
-
-        user.save(function (err) {
-          if (err) {
-            return res.status(500).jsonp({ message: "Error al modificar el usuario" });
-          }
-
-          //return res.status(200).jsonp({ message: "Uusuario modificado correctamente" });
-          return res.status(200).jsonp({ message: user });
-        })
-
-      } else {
-        return res.status(404).jsonp({ message: "No se pudo encontrar el usuario" });
-      }
-
-    });
-
+    influx
+      .findOneAndUpdate('User', {
+        email: body.email
+      },body)
+      .then(function () {
+        return res.status(200).jsonp({ message: "Datos modificados correctamente" }); 
+      })
+      .catch((err) => {
+          console.log('/api/modifyUser ERROR: ', err);
+          return res.status(500).jsonp({ message: "Error al modificar el usuario" });
+        //return res.status(200).jsonp({ message: "Uusuario modificado correctamente" });
+      })
   } else {
     return res.status(400).jsonp({ message: "Se requiere el email" });
   }
