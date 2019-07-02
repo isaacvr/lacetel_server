@@ -18,8 +18,8 @@ var bcrypt       = require('bcrypt-nodejs');
 var router      = express.Router();
 
 /// Database models
-var User        = mongoose.model('User');
-var Sensor      = mongoose.model('Sensor');
+// var User        = mongoose.model('User');
+// var Sensor      = mongoose.model('Sensor');
 
 /// PUT
 router.put('/api/renameSensor', function(req, res) {
