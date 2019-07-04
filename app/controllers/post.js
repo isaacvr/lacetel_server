@@ -279,10 +279,6 @@ router.post('/api/authorizeSensor', function (req, res) {
       }, {
         auth: true
       })
-       .then(function(sensor){
-         console.log(this)
-         return sensor
-       })
       .then((sensor) => {
         console.log("sensor: ", sensor);
         return res.status(200).jsonp({ message: "Sensor " + id + " autorizado" });
