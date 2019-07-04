@@ -7,7 +7,7 @@
 const fieldSchema = {
   name: 's',
   region: 's',
-  id: 's',  
+  id: 's',
 };
 
 const tagSchema = {

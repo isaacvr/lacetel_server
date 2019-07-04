@@ -34,6 +34,7 @@ module.exports = function(app, config) {
   require(config.root + '/app/controllers/get')(app);
   require(config.root + '/app/controllers/post')(app);
   require(config.root + '/app/controllers/put')(app);
+  require(config.root + '/app/controllers/delete')(app);
 
   //var controllers = glob.sync(config.root + '/app/controllers/*.js');
 
