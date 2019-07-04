@@ -59,7 +59,6 @@ describe('GET /api/users', function() {
       .end(function(err, res) {
         // console.log('Without AUTH', res.text);
         expect(err).to.be.null;
-        expect(res).to.be.json;
         expect(res).to.have.status(401);
         done();
       });
@@ -211,4 +210,85 @@ describe('GET /api/signals', function() {
 
 });
 
-// describe('GET /api/sensors', function() {});
+describe('GET /api/sensors', function() {
+
+  it('Should return unauthorized without token', function(done) {
+    chai
+      .request(app)
+      .get('/api/sensors')
+      .set({
+        'Accept': 'application/json'
+      })
+      .end(function(err, res) {
+        // console.log('Without AUTH', res.text);
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return unauthorized with user token', function(done) {
+    chai
+      .request(app)
+      .get('/api/sensors')
+      .set({
+        'Accept': 'application/json',
+        'Authorization': `Token ThisIsMyFakeToken`
+      })
+      .end(function(err, res) {
+        // console.log('With USER AUTH', res.text);
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done(err);
+      });
+  });
+
+  it('Should return authorized with user token', function(done) {
+    chai
+      .request(app)
+      .get('/api/sensors')
+      .set({
+        'Accept': 'application/json',
+        'Authorization': `Token ${USER_TOKEN}`
+      })
+      .end(function(err, res) {
+        // console.log('Width USER AUTH', res.text);
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        done(err);
+      });
+  });
+
+  it('Should return a list of users with moderator token', function(done) {
+    chai
+      .request(app)
+      .get('/api/sensors')
+      .set({
+        'Accept': 'application/json',
+        'Authorization': `Token ${MODERATOR_TOKEN}`
+      })
+      .end(function(err, res) {
+        // console.log('Width MOD AUTH', res.text);
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        done(err);
+      });
+  });
+
+  it('Should return a list of users with admin token', function(done) {
+    chai
+      .request(app)
+      .get('/api/sensors')
+      .set({
+        'Accept': 'application/json',
+        'Authorization': `Token ${ADMIN_TOKEN}`
+      })
+      .end(function(err, res) {
+        // console.log('Width ADMIN AUTH', res.text);
+        expect(err).to.be.null;
+        expect(res).to.have.status(200);
+        expect(res).to.have.header('Content-type', /json/);
+        done(err);
+      });
+  });
+});

@@ -90,7 +90,7 @@ router.get('/api/signals', ensureAuth, function(req, res) {
 
 });
 
-router.get('/api/sensors', /*ensureAuth,*/ function(req, res) {
+router.get('/api/sensors', ensureAuth, function(req, res) {
 
   influx
     .query('Sensor')
