@@ -4,13 +4,16 @@
 
  'use strict';
 
-var jwt = require('jwt-simple');
-var moment = require('moment');
-var mongoose = require('mongoose');
+var jwt          = require('jwt-simple');
+var moment       = require('moment');
+// var Influx       = require('influxdb-nodejs');
 var TOKEN_SECRET = require('../config/token');
-var CATEGORIES = require('../config/user_categories').enumCategories;
+var CATEGORIES   = require('../config/user_categories').enumCategories;
+// var config       = require('../config/config');
+// var influxToJSON = require('../app/utils/influx-to-json');
 
-var User = mongoose.model('User');
+// const db = config.db;
+// const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
 
 function ensureAuthenticated(req, res, next) {
 
@@ -29,8 +32,8 @@ function ensureAuthenticated(req, res, next) {
 
     req.user = payload.sub;
 
-    next();
-  } catch(e) {
+    return next();
+  } catch (e) {
     return res.status(401).jsonp({ message: "Token inválido" });
   }
 
@@ -38,12 +41,24 @@ function ensureAuthenticated(req, res, next) {
 
 function atLeast(user, category) {
 
-  if ( !CATEGORIES.hasOwnProperty(user) || !CATEGORIES.hasOwnProperty(category) ) {
+  if ( !CATEGORIES.hasOwnProperty(user.category) || !CATEGORIES.hasOwnProperty(category) ) {
     throw new TypeError('Invalid user category');
   }
 
-  var cat = ( typeof category === 'string' ) ? CATEGORIES[ category ] : category;
-  var userCat = ( typeof user.category === 'string' ) ? CATEGORIES[ user.category ] : user.category;
+  var cat = '';
+  var userCat = '';
+
+  if ( typeof category === 'string' ) {
+    cat = CATEGORIES[category];
+  } else {
+    cat = category;
+  }
+
+  if ( typeof user.category === 'string' ) {
+    userCat = CATEGORIES[user.category];
+  } else {
+    userCat = user.category;
+  }
 
   return userCat <= cat;
 
@@ -51,28 +66,33 @@ function atLeast(user, category) {
 
 function minLevel(type) {
 
-  var _type = type;
-
   return function(req, res, next) {
 
     if ( req.user ) {
 
-      User.findOne({
-        email: req.user.email
-      }, function(err, user) {
-        if ( err ) {
-          return res.status(500).jsonp({ message: "Error en la base de datos" });
-        }
-        if ( user ) {
-          if ( atLeast(user, _type) ) {
-            return next();
-          }
-          return res.status(401).jsonp({ message: "Necesitas al menos ser " + _type });
-        }
+      if ( atLeast(req.user, type) ) {
+        return next();
+      }
+      return res.status(401).jsonp({ message: "Necesitas al menos ser " + type });
 
-        return res.status(404).jsonp({ message: "Usuario no válido" });
-
-      });
+      // influx
+      // .query('User')
+      // .where({
+      // email: req.user.email
+      // })
+      // .then(influxToJSON)
+      // .then((user) => {
+      // if ( user.length > 0 ) {
+      // if ( atLeast(user[0], _type) ) {
+      // return next();
+      // }
+      // return res.status(401).jsonp({ message: "Necesitas al menos ser " + _type });
+      // }
+      // return res.status(404).jsonp({ message: "Usuario no encontrado" });
+      // })
+      // .catch((err) => {
+      // return res.status(500).jsonp({ message: "Error en la base de datos" });
+      // });//
 
     } else {
       return res.status(401).jsonp({ message: "Necesita autorización" });

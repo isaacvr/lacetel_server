@@ -19,11 +19,9 @@ module.exports = function(influx) {
   });
 };
 
-/*var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
-
-var ServiceSchema = new Schema({
-  name  : { type: String, required: true },
-});
-
-mongoose.model('Service', ServiceSchema);*/
+// var mongoose = require('mongoose');
+// var Schema   = mongoose.Schema;
+// var ServiceSchema = new Schema({
+// name  : { type: String, required: true },
+// });
+// mongoose.model('Service', ServiceSchema);

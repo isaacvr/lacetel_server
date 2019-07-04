@@ -3,27 +3,35 @@ var STATE = require('./user_states');
 
 module.exports = {
   SuperAdmin: {
-    username : "root",
-    category : "root",
-    password : bcrypt.hashSync("yosoyelroot"),
-    email: "root@root.com",
-    phone: "00000000",
-    name: '',
-    age: -1,
-    province: '',
-    configured: true,
-    state: STATE.ACTIVE
+    fields: {
+      username : "root",
+      category : "root",
+      password : bcrypt.hashSync("yosoyelroot"),
+      phone: "00000000",
+      name: 'root',
+      age: -1,
+      province: 'none',
+      configured: true,
+      state: STATE.ACTIVE
+    },
+    tags: {
+      email: "root@root.com",
+    }
   },
   Admin: {
-    username: "admin",
-    category: "admin",
-    password: bcrypt.hashSync("admin"),
-    email: "admin@admin.com",
-    phone: "00000001",
-    name: '',
-    age: -1,
-    province: '',
-    configured: true,
-    state: STATE.ACTIVE
+    fields: {
+      username: "admin",
+      category: "admin",
+      password: bcrypt.hashSync("admin"),
+      phone: "00000001",
+      name: 'admin',
+      age: -1,
+      province: 'none',
+      configured: true,
+      state: STATE.ACTIVE
+    },
+    tags: {
+      email: "admin@admin.com",
+    }
   }
 };

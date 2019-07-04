@@ -7,7 +7,7 @@
 const fieldSchema = {
   name: 's',
   username: 's',
-  email: 's',
+  // email: 's',
   password: 's',
   configured: 'b',
   age: 'i',
@@ -18,6 +18,7 @@ const fieldSchema = {
 };
 
 const tagSchema = {
+  email: '*',
 };
 
 const name = 'User';
