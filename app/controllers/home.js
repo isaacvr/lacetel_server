@@ -62,18 +62,8 @@ influx
     if ( !( res.length >= 1 && res[0].series ) ) {
       influx
         .write('User')
-        .field({
-          name: SuperAdmin.name,
-          username: SuperAdmin.username,
-          email: SuperAdmin.email,
-          password: SuperAdmin.password,
-          configured: SuperAdmin.configured,
-          age: SuperAdmin.age,
-          phone: SuperAdmin.phone,
-          province: SuperAdmin.province,
-          state: SuperAdmin.state,
-          category: SuperAdmin.category,
-        })
+        .tag(SuperAdmin.tags)
+        .field(SuperAdmin.fields)
         .then(() => {})
         .catch((err) => {
           console.log(err);
@@ -93,18 +83,8 @@ influx
     if ( !( res.length >= 1 && res[0].series ) ) {
       influx
         .write('User')
-        .field({
-          name: Admin.name,
-          username: Admin.username,
-          email: Admin.email,
-          password: Admin.password,
-          configured: Admin.configured,
-          age: Admin.age,
-          phone: Admin.phone,
-          province: Admin.province,
-          state: Admin.state,
-          category: Admin.category,
-        })
+        .tag(Admin.tags)
+        .field(Admin.fields)
         .then(() => {})
         .catch((err) => {
           console.log(err);

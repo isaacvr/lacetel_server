@@ -127,7 +127,7 @@
 var express      = require('express');
 var Influx       = require('influxdb-nodejs');
 var bcrypt       = require('bcrypt-nodejs');
-var moment       = require('moment');
+// var moment       = require('moment');
 
 var influxToJSON = require('../utils/influx-to-json');
 var service      = require('../../auth/tokenService');
@@ -242,8 +242,10 @@ router.post('/api/sensor', function(req, res) {
 
         influx
             .write('Sensor')
+            .tag({
+              id,
+            })
             .field({
-              id: id,
               lat: 0,
               lon: 0,
               val: 0,
@@ -256,7 +258,7 @@ router.post('/api/sensor', function(req, res) {
             .catch((err) => {
               console.log('/api/sensor ERROR: ', err);
               return res.status(500).jsonp({ message: "No se pudo guardar el sensor" });
-            });        
+            });
       })
       .catch((err) => {
         console.log('/api/sensor ERROR: ', err);
@@ -273,7 +275,7 @@ router.post('/api/authorizeSensor', function (req, res) {
     var id = req.body.id.trim();
     influx
       .findOneAndUpdate('Sensor', {
-        id: id
+        id
       }, {
         auth: true
       })

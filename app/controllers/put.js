@@ -6,10 +6,10 @@
 
 /// Dependencies
 var express = require('express');
-var moment = require('moment');
+// var moment = require('moment');
 var Influx = require('influxdb-nodejs');
 var config = require('../../config/config');
-var influxToJSON = require('../utils/influx-to-json');
+// var influxToJSON = require('../utils/influx-to-json');
 //var mongoose     = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 //mongoose.Promise = require('bluebird');
@@ -34,7 +34,7 @@ const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
 //        typeof body.idNew === 'string' &&
 //        body.idNew.trim() != '' ) {
 
-//     Sensor.findOneAndUpdate({
+//     sensor.findOneAndUpdate({
 //       id: body.id
 //     }, {
 //       id: body.idNew
@@ -72,7 +72,7 @@ const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
 
 //   if ( body.email ) {
 
-//     User.findOne({
+//     user.findOne({
 //       email: body.email
 //     }).exec(function(err, user) {
 
@@ -127,16 +127,13 @@ router.put('/api/renameSensor', function (req, res) {
       }, {
           id: body.idNew
         })
-      .then(() => {
-        return res.status(200).jsonp({ message: "Sensor " + body.id + " renombrado a " + body.idNew });
-      })
+      .then(() => res.status(200).jsonp({ message: "Sensor " + body.id + " renombrado a " + body.idNew }))
       .catch((err) => {
         console.log('/api/renameSensor ERROR: ', err);
         return res.status(500).jsonp({ message: "No se pudo actualizar" });
       });
     return res.status(404).jsonp({ message: "No se encontró el sensor " + body.id });
-  }
-  else {
+  } else {
     return res.status(400).jsonp({
       message: "Error en el formato de los datos enviados."
     });
@@ -159,9 +156,9 @@ router.put('/api/modifyUser', function (req, res) {
     influx
       .findOneAndUpdate('User', {
         email: body.email
-      },body)
+      }, body)
       .then(function () {
-        return res.status(200).jsonp({ message: "Datos modificados correctamente" }); 
+        return res.status(200).jsonp({ message: "Datos modificados correctamente" });
       })
       .catch((err) => {
           console.log('/api/modifyUser ERROR: ', err);
@@ -177,5 +174,3 @@ router.put('/api/modifyUser', function (req, res) {
 module.exports = function (app) {
   app.use('/', router);
 };
-
-
