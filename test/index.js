@@ -10,6 +10,7 @@ var express      = require('express');
 var Influx       = require('influxdb-nodejs');
 var bcrypt       = require('bcrypt-nodejs');
 var request      = require('request-promise');
+var glob         = require('glob');
 
 var influxToJSON = require('../app/utils/influx-to-json');
 // var CATEGORIES   = require('../config/user_categories').enumCategories;
@@ -18,23 +19,37 @@ var config       = require('../config/config');
 var createToken  = require('../auth/tokenService').createToken;
 var STATES       = require('../config/user_states');
 
+/// Store database configuration
 const db = config.db;
 const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
 
+/// Load database models
+var models = glob.sync(config.root + '/app/models/*.js');
+
+models.forEach(function (model) {
+  require(model)(influx);
+});
+
+/// Server instance
 var app = express();
 
+/// Chai pluggin for requests
 chai.use(chaiHttp);
 
+/// Assertion function
 var expect = chai.expect;
 
+/// Attach the routing module
 require('../config/express')(app, config);
 
-//var controllers = glob.sync(config.root + '/app/controllers/*.js');
+/// Load the controllers for the route
+var controllers = glob.sync(config.root + '/app/controllers/*.js');
 
-// controllers.forEach(function (controller) {
-//   require(controller)(app);
-// });
+controllers.forEach(function (controller) {
+  require(controller)(app);
+});
 
+/// Fake users with different permission levels
 var ADMIN_TOKEN = createToken({
   name: 'admin',
   username: 'admin',
@@ -56,6 +71,7 @@ var USER_TOKEN = createToken({
   category: 'user',
 });
 
+/// Helper functions
 function createUser(email, password, category, state) {
 
   return influx
@@ -89,6 +105,37 @@ function deleteUser(email, done) {
   })
     .then((res) => { done(); })
     .catch(done);
+
+}
+
+function createSensor(id) {
+  return influx
+    .write('Sensor')
+    .tag({
+      id
+    })
+    .field({
+      lat: 0,
+      lon: 0,
+      val: 0,
+      lastSeen: '',
+      auth: true,
+    });
+}
+
+function deleteSensor(id, done) {
+
+  request({
+    method: 'POST',
+    uri: `http://${db.host}:${db.port}/query`,
+    form: {
+      db: 'lacetel',
+      q: `drop series from "Sensor" where id='${id}'`
+    },
+    json: true
+  })
+  .then(() => done())
+  .catch(done);
 
 }
 
@@ -246,7 +293,7 @@ describe('GET /api/signals', function() {
         expect(res).to.have.header('Content-type', /json/);
         done();
       });
-  });//*/
+  });
 
 });
 
@@ -518,4 +565,199 @@ describe('POST /api/register', function() {
       .catch(done);
   });
 
+});
+
+/// DELETE
+describe('DELETE /api/sensor/:id', function() {
+  it('Should return unauthorized error (without token)', function(done) {
+    chai
+      .request(app)
+      .delete('/api/sensor/12121321')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return unauthorized error (invalid token)', function(done) {
+    chai
+      .request(app)
+      .delete('/api/sensor/12121321')
+      .set({
+        "Authorization": "Token faketoken"
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return unauthorized error (user token)', function(done) {
+    chai
+      .request(app)
+      .delete('/api/sensor/12121321')
+      .set({
+        "Authorization": `Token ${USER_TOKEN}`
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return not found error', function(done) {
+    chai
+      .request(app)
+      .delete('/api/sensor/$fakeid$')
+      .set({
+        "Authorization": `Token ${ADMIN_TOKEN}`
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(404);
+        done();
+      });
+  });
+
+  it('Should delete the sensor', function(done) {
+
+    createSensor('$fakesensor$')
+      .then(() => {
+        chai
+          .request(app)
+          .delete('/api/sensor/$fakesensor$')
+          .set({
+            "Authorization": `Token ${ADMIN_TOKEN}`
+          })
+          .end(function(err, res) {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            influx
+              .query('Sensor')
+              .where('id', '$fakesensor$')
+              .then(influxToJSON)
+              .then((sensors) => {
+                expect(sensors).to.have.length(0);
+                done();
+              })
+              .catch(done);
+          });
+      })
+      .catch(done);//*/
+  });
+});
+
+describe('DELETE /api/user/:email', function() {
+  it('Should return unauthorized error (without token)', function(done) {
+    chai
+      .request(app)
+      .delete('/api/user/12121321')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return unauthorized error (invalid token)', function(done) {
+    chai
+      .request(app)
+      .delete('/api/user/12121321')
+      .set({
+        "Authorization": "Token faketoken"
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return unauthorized error (user token)', function(done) {
+    chai
+      .request(app)
+      .delete('/api/user/12121321')
+      .set({
+        "Authorization": `Token ${USER_TOKEN}`
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+  });
+
+  it('Should return not found error for fake email', function(done) {
+    chai
+      .request(app)
+      .delete('/api/user/$fakeid$')
+      .set({
+        "Authorization": `Token ${ADMIN_TOKEN}`
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(404);
+        done();
+      });
+  });
+
+  it('Should return not found for the root', function(done) {
+    chai
+      .request(app)
+      .delete('/api/user/root@root.com')
+      .set({
+        'Authorization': `Token ${ADMIN_TOKEN}`
+      })
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(404);
+        done();
+      });
+  });
+
+  it('Should delete the user', function(done) {
+    this.timeout(0);
+
+    createUser('$fakeuser$', 'fakepassword', 'admin', STATES.ACTIVE)
+      .then(() => {
+        chai
+          .request(app)
+          .delete('/api/user/$fakeuser$')
+          .set({
+            "Authorization": `Token ${ADMIN_TOKEN}`
+          })
+          .end(function(err, res) {
+            expect(err).to.be.null;
+            expect(res).to.have.status(200);
+            influx
+              .query('User')
+              .where('email', '$fakeuser$')
+              .then(influxToJSON)
+              .then((sensors) => {
+                expect(sensors).to.have.length(0);
+                done();
+              })
+              .catch(done);
+          });
+      })
+      .catch(done);//*/
+  });
+
+});
+
+/// INVALID ROUTE (GET)
+describe('GET INVALID ROUTE /api/lalalalala', function() {
+  it('Should return page not found', function(done) {
+    chai
+      .request(app)
+      .get('/api/lalalalala')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(404);
+        done();
+      });
+  });
 });

@@ -30,14 +30,11 @@ influx.showDatabases()
   .then(() => {
     console.log('Conectado a la base de datos!');
 
-    // var models = glob.sync(config.root + '/app/models/*.js');
+    var models = glob.sync(config.root + '/app/models/*.js');
 
-    require(config.root + '/app/models/user')(influx);
-    require(config.root + '/app/models/signal_level')(influx);
-
-    // models.forEach(function (model) {
-    //   require(model);
-    // });
+    models.forEach(function (model) {
+      require(model)(influx);
+    });
 
     var app = express();
 
