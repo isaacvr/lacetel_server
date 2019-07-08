@@ -8,7 +8,7 @@ var objPath = require('./object-path');
 
 module.exports = function influxToJSON(data) {
 
-  console.log('data: ', data);
+  // console.log('data: ', data);
 
   var newData = {};
 
@@ -18,7 +18,7 @@ module.exports = function influxToJSON(data) {
     newData = data;
   }
 
-  console.log('newData: ', data);
+  // console.log('newData: ', data);
 
   if ( !newData ) {
     return [];

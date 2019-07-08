@@ -16,7 +16,7 @@ var ensureAuth = authProvider.ensureAuthenticated;
 var minLevel = authProvider.minLevel;
 
 /// Router
-var router      = express.Router();
+var router = express.Router();
 
 /// Database models
 const db = config.db;
@@ -67,7 +67,7 @@ router.delete('/api/sensor/:id', ensureAuth, minLevel('admin'), function(req, re
 
 router.delete('/api/user/:email', ensureAuth, minLevel('admin'), function(req, res) {
 
-  if ( req.params.email === 'root@root.com' ) {
+  if (req.params.email === 'root@root.com') {
     return res.status(404).jsonp({ message: "No existe ningún usuario con ese email" });
   }
 

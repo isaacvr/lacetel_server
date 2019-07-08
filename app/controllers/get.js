@@ -8,14 +8,19 @@ var express      = require('express');
 var moment       = require('moment');
 var Influx       = require('influxdb-nodejs');
 var config       = require('../../config/config');
+var CATEGORIES   = require('../../config/user_categories').enumCategories;
 var influxToJSON = require('../utils/influx-to-json');
+var authProvider = require('../../auth');
 
 var router  = express.Router();
+
+var ensureAuth = authProvider.ensureAuthenticated;
+var minLeven = authProvider.minLevel;
 
 const db = config.db;
 const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
 
-router.get('/api/users', /*ensureAuth, minLeven(UserCategories.moderador),*/ function(req, res) {
+router.get('/api/users', ensureAuth, minLeven(CATEGORIES.moderador), function(req, res) {
 
   influx
     .query('User')
@@ -29,9 +34,9 @@ router.get('/api/users', /*ensureAuth, minLeven(UserCategories.moderador),*/ fun
 
 });
 
-router.get('/api/user/:username', /*ensureAuth,*/ function(req, res) {
+router.get('/api/user/:username', ensureAuth, function(req, res) {
 
-  console.log("PARAMS: ", req.params.username);
+  // console.log("PARAMS: ", req.params.username);
 
   influx
     .query('User')
@@ -54,13 +59,13 @@ router.get('/api/user/:username', /*ensureAuth,*/ function(req, res) {
 
 });
 
-router.get('/api/signals', /*ensureAuth,*/ function(req, res) {
+router.get('/api/signals', ensureAuth, function(req, res) {
 
   var query = [];
   var from = moment( new Date(req.query.from) );
   var to = moment( new Date(req.query.to) );
 
-  console.log(req.query.from, req.query.to);
+  // console.log(req.query.from, req.query.to);
 
   if ( from.isValid() ) {
     query.push('"date" >= ' + from.format('x'));
@@ -70,7 +75,7 @@ router.get('/api/signals', /*ensureAuth,*/ function(req, res) {
     query.push('"date" <= ' + to.format('x'));
   }
 
-  console.log('QUERY: ', query);
+  // console.log('QUERY: ', query);
 
   influx
     .query('SignalLevel')
@@ -85,7 +90,7 @@ router.get('/api/signals', /*ensureAuth,*/ function(req, res) {
 
 });
 
-router.get('/api/sensors', /*ensureAuth,*/ function(req, res) {
+router.get('/api/sensors', ensureAuth, function(req, res) {
 
   influx
     .query('Sensor')

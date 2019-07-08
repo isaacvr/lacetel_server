@@ -8,9 +8,9 @@ module.exports = {
       category : "root",
       password : bcrypt.hashSync("yosoyelroot"),
       phone: "00000000",
-      name: '',
+      name: 'root',
       age: -1,
-      province: '',
+      province: 'none',
       configured: true,
       state: STATE.ACTIVE
     },
@@ -24,9 +24,9 @@ module.exports = {
       category: "admin",
       password: bcrypt.hashSync("admin"),
       phone: "00000001",
-      name: '',
+      name: 'admin',
       age: -1,
-      province: '',
+      province: 'none',
       configured: true,
       state: STATE.ACTIVE
     },

@@ -10,7 +10,7 @@ var TOKEN_SECRET = require('../config/token');
 
 function createToken(user) {
 
-  console.log('USER FOR TOKEN: ', user);
+  // console.log('USER FOR TOKEN: ', user);
 
   var payload = {
     sub: {
@@ -25,12 +25,13 @@ function createToken(user) {
       category: user.category,
     },
     iat: moment().unix(),
-    exp: moment().add(20, 'm').unix()
+    exp: moment().add(20, 'm')
+.unix()
   };
 
-  //console.log('Payload: ', payload, '\nToken: ', TOKEN_SECRET);
+  // console.log('Payload: ', payload, '\nToken: ', TOKEN_SECRET);
 
-  console.log('TOKEN GENERATED: ', jwt.encode(payload, TOKEN_SECRET));
+  // console.log('TOKEN GENERATED: ', jwt.encode(payload, TOKEN_SECRET));
 
   return jwt.encode(payload, TOKEN_SECRET);
 
