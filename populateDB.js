@@ -29,7 +29,8 @@ influx.showDatabases()
   .then(() => {
     console.log('Conectado a la base de datos!');
 
-    loadSignalLevel(10000)
+    // loadSignalLevel(10000)
+    loadSensors()
       .then(() => {
         console.log('MIGRATIONS DONE!!!');
       });
@@ -105,32 +106,46 @@ function loadSignalLevel(total) {
 
 }
 
-/*function loadSensors() {
+function loadSensors() {
 
   console.log('LOADING SENSORS');
 
   //var Sensor = mongoose.model('Sensor');
 
-  var sensors = [
-    [ 21.8601, -438.6626, -90 ],
-    [ 22.3601, -440.6626, -70 ],
-    [ 20.3601, -435.6626, -45 ],
-    [ 22.3601, -443.6626, -20 ]
-  ];
+  return new Promise((resolve, reject) => {
 
-  sensors.forEach(function(e) {
+    var sensors = [
+      [ 21.8601, -438.6626, -90 ],
+      [ 22.3601, -440.6626, -70 ],
+      [ 20.3601, -435.6626, -45 ],
+      [ 22.3601, -443.6626, -20 ]
+    ];
 
-    var sensor = new Sensor({
-      id: genRandom(),
-      lat: e[0],
-      lon: e[1],
-      val: e[2]
-    });
+    let i = 0;
+    let cant = sensors.length;
 
-    sensor.save();
+    let storeNext = function() {
+      if ( i < cant ) {
+        influx
+          .write('Sensor')
+          .tag({
+            id: genRandom()
+          })
+          .field({
+            lat: sensors[i][0],
+            lon: sensors[i][1],
+            val: sensors[i][2]
+          })
+          .then(storeNext)
+          .catch(reject);
+        i += 1;
+      } else {
+        resolve();
+      }
+    };
+
+    storeNext();
 
   });
 
-  console.log('SENSORS LOADED');
-
-}//*/
+}

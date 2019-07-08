@@ -2,7 +2,7 @@
  *  @author: Isaac Vega Rodriguez          <isaacvega1996@gmail.com>
  */
 
- 'use strict';
+'use strict';
 
 var jwt          = require('jwt-simple');
 var moment       = require('moment');

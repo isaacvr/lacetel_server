@@ -26,8 +26,8 @@ influx
         .write('User')
         .tag(SuperAdmin.tags)
         .field(SuperAdmin.fields)
-        .then((a, b, c, d) => {
-          console.log('Root', a, b, c, d);
+        .then(() => {
+          console.log('CREATED ROOT');
         })
         .catch((err) => {
           console.log(err);
@@ -48,8 +48,8 @@ influx
         .write('User')
         .tag(Admin.tags)
         .field(Admin.fields)
-        .then((a, b, c, d) => {
-          console.log('Admin', a, b, c, d);
+        .then(() => {
+          console.log('CREATED ADMIN');
         })
         .catch((err) => {
           console.log(err);

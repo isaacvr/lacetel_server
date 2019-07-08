@@ -5,7 +5,6 @@
 'use strict';
 
 const fieldSchema = {
-  id: 's',
   lat: 'i',
   lon: 'i',
   val: 'i',
@@ -14,6 +13,7 @@ const fieldSchema = {
 };
 
 const tagSchema = {
+  id: '*',
 };
 
 const name = 'Sensor';

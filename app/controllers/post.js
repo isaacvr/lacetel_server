@@ -7,6 +7,7 @@
 var express      = require('express');
 var Influx       = require('influxdb-nodejs');
 var bcrypt       = require('bcrypt-nodejs');
+// var moment       = require('moment');
 
 var influxToJSON = require('../utils/influx-to-json');
 var service      = require('../../auth/tokenService');
@@ -109,6 +110,70 @@ router.post('/api/register', function(req, res) {
   }
 });
 
+router.post('/api/sensor', function(req, res) {
+
+  if (typeof req.body.id === 'string' && req.body.id.trim() != '') {
+    var id = req.body.id.trim();
+    influx
+      .query('Sensor')
+      .where('id', id)
+      .then(influxToJSON)
+      .then(function (sensors) {
+        if ( sensors.length > 0 ) {
+          return res.status(400).jsonp({ message: "Ya existe un sensor con ID " + id });
+        }
+
+        influx
+            .write('Sensor')
+            .tag({
+              id,
+            })
+            .field({
+              lat: 0,
+              lon: 0,
+              val: 0,
+              lastSeen: '',
+              auth: true,
+            })
+            .then(() => {
+              res.status(200).jsonp({ message: "Sensor registrado correctamente" })
+            })
+            .catch((err) => {
+              console.log('/api/sensor ERROR: ', err);
+              return res.status(500).jsonp({ message: "No se pudo guardar el sensor" });
+            });
+      })
+      .catch((err) => {
+        console.log('/api/sensor ERROR: ', err);
+        return res.status(500).jsonp({ message: "Error en la base de datos" });
+      });
+  } else {
+    return res.status(400).jsonp({ message: "Se necesita el id del sensor" });
+  }
+});
+
+router.post('/api/authorizeSensor', function (req, res) {
+
+  if (typeof req.body.id === 'string' && req.body.id.trim() != '') {
+    var id = req.body.id.trim();
+    influx
+      .findOneAndUpdate('Sensor', {
+        id
+      }, {
+        auth: true
+      })
+      .then((sensor) => {
+        console.log("sensor: ", sensor);
+        return res.status(200).jsonp({ message: "Sensor " + id + " autorizado" });
+      })
+      .catch((err) => {
+        console.log('/api/authorizeSensor ERROR: ', err);
+        return res.status(500).jsonp({ message: "Error en la base de datos" });
+      });
+  } else {
+    return res.status(400).jsonp({ message: "Se necesita un ID" });
+  }
+});
 
 module.exports = function (app) {
   app.use('/', router);
