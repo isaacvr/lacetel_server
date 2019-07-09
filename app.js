@@ -6,16 +6,8 @@
 
 var express  = require('express');
 var config   = require('./config/config');
-// var glob     = require('glob');
+var glob     = require('glob');
 var Influx   = require('influxdb-nodejs');
-// var mongoose = require('mongoose');
-// var https    = require('https');
-// var fs       = require('fs');
-
-// var httpsOptions = {
-//   key: fs.readFileSync('./config/server.key'),
-//   cert: fs.readFileSync('./config/server.cert')
-// };
 
 const db = config.db;
 
