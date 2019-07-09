@@ -19,7 +19,7 @@ module.exports = function(app, config) {
   app.locals.ENV_DEVELOPMENT = env == 'development';
 
   // app.use(favicon(config.root + '/public/img/favicon.ico'));
-  //app.use(logger('dev'));
+  // app.use(logger('dev'));
   app.use(cors());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
@@ -33,6 +33,8 @@ module.exports = function(app, config) {
   require(config.root + '/app/controllers/home')(app);
   require(config.root + '/app/controllers/get')(app);
   require(config.root + '/app/controllers/post')(app);
+  require(config.root + '/app/controllers/put')(app);
+  require(config.root + '/app/controllers/delete')(app);
 
   //var controllers = glob.sync(config.root + '/app/controllers/*.js');
 

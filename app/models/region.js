@@ -3,6 +3,7 @@
  */
 
 'use strict';
+
 const fieldSchema = {
   name: 's',
 };
@@ -17,12 +18,3 @@ module.exports = function(influx) {
     stripUnknown: true,
   });
 };
-
-/*var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
-
-var RegionSchema = new Schema({
-  name  : { type: String, required: true },
-});
-
-mongoose.model('Region', RegionSchema);*/

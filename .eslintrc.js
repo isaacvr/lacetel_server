@@ -112,7 +112,7 @@ module.exports = {
         "max-lines": "error",
         "max-lines-per-function": "off",
         "max-nested-callbacks": "error",
-        "max-params": "error",
+        "max-params": "off",
         "max-statements": "off",
         "max-statements-per-line": "off",
         "multiline-comment-style": [
@@ -255,7 +255,7 @@ module.exports = {
         "radix": "error",
         "require-atomic-updates": "error",
         "require-await": "error",
-        "require-jsdoc": "error",
+        "require-jsdoc": "off",
         "require-unicode-regexp": "off",
         "rest-spread-spacing": "error",
         "semi": "off",
