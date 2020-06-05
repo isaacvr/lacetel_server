@@ -17,7 +17,7 @@ var STATES       = require('../../config/user_states');
 var router  = express.Router();
 
 const db = config.db;
-const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+const influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 router.post('/api/login', function(req, res) {
 
@@ -129,10 +129,11 @@ router.post('/api/sensor', function(req, res) {
               id,
             })
             .field({
-              lat: 0,
-              lon: 0,
-              val: 0,
-              lastSeen: '',
+              lat: req.body.lat,
+              lon: req.body.lon,
+			//  val: 0,
+			//  lastSeen: '',
+              date: new Date(),
               auth: true,
             })
             .then(() => {

@@ -16,7 +16,7 @@ var request      = require('request-promise');
 var router = express.Router();
 
 const db = config.db;
-const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+const influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 /// Helper functions
 function exists(measurement, field, value) {
@@ -37,9 +37,9 @@ function query(measurement, field, value) {
 function remove(measurement, field, value) {
   return request({
     method: 'POST',
-    uri: `http://${db.host}:${db.port}/query`,
+    uri: `http://${db.username}:${db.password}@${db.host}:${db.port}/query`,
     form: {
-      db: 'lacetel',
+      db: 'monitoring',
       q: `drop series from "${measurement}" where ${field}='${value}'`
     },
     json: true
@@ -87,8 +87,9 @@ router.put('/api/renameSensor', function (req, res) {
                   .field({
                     lat: sensor.lat,
                     lon: sensor.lon,
-                    val: sensor.val,
-                    lastSeen: sensor.lastSeen,
+				//	val: sensor.val,
+				//	lastSeen: sensor.lastSeen, 
+                    date: sensor.date,
                     auth: sensor.auth,
                   })
                   .then(() => res.status(200).jsonp({

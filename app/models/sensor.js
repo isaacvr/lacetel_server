@@ -5,10 +5,11 @@
 'use strict';
 
 const fieldSchema = {
-  lat: 'i',
-  lon: 'i',
-  val: 'i',
-  lastSeen: 's',
+  lat: 'f',
+  lon: 'f',
+//  val: 'i',
+  date: 's',
+//  lastSeen: 's',
   auth: 'b',
 };
 

@@ -11,7 +11,7 @@ var Influx   = require('influxdb-nodejs');
 
 const db = config.db;
 
-const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+const influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 influx.showDatabases()
   .then((names) => {

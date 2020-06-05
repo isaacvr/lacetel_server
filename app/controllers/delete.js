@@ -20,7 +20,7 @@ var router = express.Router();
 
 /// Database models
 const db = config.db;
-const dbUrl = `http://${db.host}:${db.port}/${db.database}`;
+const dbUrl = `http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`;
 const influx = new Influx(dbUrl);
 
 /// DELETE
@@ -44,9 +44,9 @@ router.delete('/api/sensor/:id', ensureAuth, minLevel('admin'), function(req, re
 
       request({
           method: 'POST',
-          uri: `http://${db.host}:${db.port}/query`,
+          uri: `http://${db.username}:${db.password}@${db.host}:${db.port}/query`,
           form: {
-            db: 'lacetel',
+            db: 'monitoring',
             q: `drop series from "Sensor" where id='${id}'`
           },
           json: true
@@ -89,7 +89,7 @@ router.delete('/api/user/:email', ensureAuth, minLevel('admin'), function(req, r
       const deleteUser = function() {
         request({
           method: 'POST',
-          uri: `http://${db.host}:${db.port}/query`,
+          uri: `http://${db.username}:${db.password}@${db.host}:${db.port}/query`,
           form: {
             db: 'lacetel',
             q: `drop series from "User" where email='${req.params.email}'`

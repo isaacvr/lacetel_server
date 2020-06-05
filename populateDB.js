@@ -18,7 +18,7 @@ var moment = require('moment');
 
 let db = config.db;
 
-let influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+let influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 influx.showDatabases()
   .then((names) => {
