@@ -567,6 +567,22 @@ describe('POST /api/register', function() {
 
 });
 
+/// PUT
+describe('PUT /api/renameSensor', function() {
+  it('Should return unauthorized (without token)', function(done) {
+    chai
+      .request(app)
+      .put('/api/renameSensor')
+      .end(function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.have.status(401);
+        done();
+      });
+    });
+});
+
+// describe('PUT /api/modifyUser', function() {});
+
 /// DELETE
 describe('DELETE /api/sensor/:id', function() {
   it('Should return unauthorized error (without token)', function(done) {

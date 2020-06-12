@@ -29,8 +29,9 @@ influx.showDatabases()
   .then(() => {
     console.log('Conectado a la base de datos!');
 
-    // loadSignalLevel(10000)
-    loadSensors()
+    // loadSensors()
+
+    loadSignalLevel(10000)
       .then(() => {
         console.log('MIGRATIONS DONE!!!');
       });
