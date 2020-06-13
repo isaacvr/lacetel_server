@@ -18,7 +18,7 @@ var ensureAuth = authProvider.ensureAuthenticated;
 var minLeven = authProvider.minLevel;
 
 const db = config.db;
-const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+const influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 router.get('/api/users', ensureAuth, minLeven(CATEGORIES.moderador), function(req, res) {
 

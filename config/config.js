@@ -16,9 +16,11 @@ var config = {
     },
     port: process.env.PORT || 4000,
     db: {
-      host: '127.0.0.1',
+      host: '192.168.255.129',
       port: 8086,
-      database: 'lacetel'
+      database: 'monitoring',
+	  username: 'web',
+	  password: 'Lacetel123'
     }
   },
 

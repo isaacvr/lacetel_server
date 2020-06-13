@@ -17,7 +17,7 @@ var STATES       = require('../../config/user_states');
 var router  = express.Router();
 
 const db = config.db;
-const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+const influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 router.post('/api/login', function(req, res) {
 

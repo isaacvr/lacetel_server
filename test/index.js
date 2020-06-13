@@ -21,7 +21,7 @@ var STATES       = require('../config/user_states');
 
 /// Store database configuration
 const db = config.db;
-const influx = new Influx(`http://${db.host}:${db.port}/${db.database}`);
+const influx = new Influx(`http://${db.username}:${db.password}@${db.host}:${db.port}/${db.database}`);
 
 /// Load database models
 var models = glob.sync(config.root + '/app/models/*.js');
