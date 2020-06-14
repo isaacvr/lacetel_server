@@ -112,37 +112,44 @@ router.post('/api/register', function(req, res) {
 
 router.post('/api/sensor', function(req, res) {
 
-  if (typeof req.body.id === 'string' && req.body.id.trim() != '') {
-    var id = req.body.id.trim();
+  let sensor = req.body;
+
+  console.log('SENSOR: ', sensor);
+
+  if (typeof sensor.id === 'string' && sensor.id.trim() != '') {
+    sensor.id = sensor.id.trim();
+
     influx
       .query('Sensor')
-      .where('id', id)
+      .where('id', sensor.id)
       .then(influxToJSON)
       .then(function (sensors) {
         if ( sensors.length > 0 ) {
-          return res.status(400).jsonp({ message: "Ya existe un sensor con ID " + id });
+          return res.status(400).jsonp({ message: "Ya existe un sensor con ID " + sensor.id });
         }
 
+        sensor.date = new Date();
+
         influx
-            .write('Sensor')
-            .tag({
-              id,
-            })
-            .field({
-              lat: req.body.lat,
-              lon: req.body.lon,
-			//  val: 0,
-			//  lastSeen: '',
-              date: new Date(),
-              auth: true,
-            })
-            .then(() => {
-              res.status(200).jsonp({ message: "Sensor registrado correctamente" })
-            })
-            .catch((err) => {
-              console.log('/api/sensor ERROR: ', err);
-              return res.status(500).jsonp({ message: "No se pudo guardar el sensor" });
-            });
+          .write('Sensor')
+          .tag({
+            id: sensor.id,
+          })
+          .field({
+            lat: sensor.lat,
+            lon: sensor.lon,
+            val: 0,
+            lastSeen: '',
+            auth: true,
+            date: sensor.date
+          })
+          .then(() => {
+            res.status(200).jsonp(sensor)
+          })
+          .catch((err) => {
+            console.log('/api/sensor ERROR: ', err);
+            return res.status(500).jsonp({ message: "No se pudo guardar el sensor" });
+          });
       })
       .catch((err) => {
         console.log('/api/sensor ERROR: ', err);
