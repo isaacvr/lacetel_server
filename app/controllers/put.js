@@ -83,12 +83,11 @@ router.put('/api/renameSensor', function (req, res) {
                   .write('Sensor')
                   .tag({
                     id: sensor.id,
+					//host: sensor.host,
                   })
                   .field({
                     lat: sensor.lat,
                     lon: sensor.lon,
-				//	val: sensor.val,
-				//	lastSeen: sensor.lastSeen, 
                     date: sensor.date,
                     auth: sensor.auth,
                   })
