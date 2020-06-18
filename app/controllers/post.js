@@ -127,7 +127,7 @@ router.post('/api/sensor', function(req, res) {
             .write('Sensor')
             .tag({
               id,
-			  //host: 'WEB',
+			        host: 'WEB',
             })
             .field({
               lat: req.body.lat,

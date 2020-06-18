@@ -13,7 +13,7 @@ const fieldSchema = {
 
 const tagSchema = {
   id: '*',
- //host: ['WEB', 'SENSOR'],
+  host: ['WEB', 'SENSOR'],
 };
 
 const name = 'Sensor';
