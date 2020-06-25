@@ -11,10 +11,6 @@ var config       = require('../../config/config');
 var bcrypt       = require('bcrypt-nodejs');
 var influxToJSON = require('../utils/influx-to-json');
 var request      = require('request-promise');
-var authService  = require('../../auth/index');
-
-var ensureAuth = authService.ensureAuthenticated;
-var minLevel = authService.minLevel;
 
 /// Router
 var router = express.Router();
@@ -51,7 +47,7 @@ function remove(measurement, field, value) {
 }
 
 /// PUT
-router.put('/api/renameSensor', ensureAuth, minLevel('moderador'), function (req, res) {
+router.put('/api/renameSensor', function (req, res) {
 
   var body = req.body;
 
@@ -124,7 +120,7 @@ router.put('/api/renameSensor', ensureAuth, minLevel('moderador'), function (req
   }
 });
 
-router.put('/api/modifyUser', ensureAuth, minLevel('admin'), function (req, res) {
+router.put('/api/modifyUser', function (req, res) {
 
   var body = req.body;
 
