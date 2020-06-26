@@ -7,13 +7,14 @@
 const fieldSchema = {
   lat: 'f',
   lon: 'f',
+//  val: 'i',
   date: 's',
+//  lastSeen: 's',
   auth: 'b',
 };
 
 const tagSchema = {
   id: '*',
- //host: ['WEB', 'SENSOR'],
 };
 
 const name = 'Sensor';
