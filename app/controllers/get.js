@@ -90,7 +90,35 @@ router.get('/api/signals', ensureAuth, function(req, res) {
 
 });
 
-router.get('/api/sensors', ensureAuth, function(req, res) {
+ router.get('/api/sameIdSensor/:id', function(req, res) {
+
+   const id = req.params.id;
+
+   influx
+     .query('Sensor')
+     .where('id', id)
+     .then(influxToJSON)
+     .then((sensors) => {
+
+       request({
+           method: 'GET',
+           uri: `http://${db.username}:${db.password}@${db.host}:${db.port}/query`,
+           form: {
+             db: 'monitoring',
+             q: `select series from "Sensor" where id='${id}'`
+           },
+           json: true
+         })
+
+     })
+     .catch((err) => {
+       console.log('/api/sameIdSensor/:id ERROR: ', err);
+       return res.status(500).jsonp({ message: "Error en la base de datos" });
+      });
+
+ }); 
+ 
+ router.get('/api/sensors', ensureAuth, function(req, res) {
 
   influx
     .query('Sensor')

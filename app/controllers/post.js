@@ -119,20 +119,19 @@ router.post('/api/sensor', function(req, res) {
       .where('id', id)
       .then(influxToJSON)
       .then(function (sensors) {
-        if ( sensors.length > 0 ) {
+        /* if ( sensors.length > 0 ) {
           return res.status(400).jsonp({ message: "Ya existe un sensor con ID " + id });
-        }
+        } */
 
         influx
             .write('Sensor')
             .tag({
               id,
+              host: 'WEB',
             })
             .field({
               lat: req.body.lat,
               lon: req.body.lon,
-			//  val: 0,
-			//  lastSeen: '',
               date: new Date(),
               auth: true,
             })
@@ -161,7 +160,8 @@ router.post('/api/authorizeSensor', function (req, res) {
       .findOneAndUpdate('Sensor', {
         id
       }, {
-        auth: true
+        auth: true,
+        //date = new Date(),
       })
       .then((sensor) => {
         console.log("sensor: ", sensor);

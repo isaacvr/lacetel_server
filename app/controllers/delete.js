@@ -38,9 +38,9 @@ router.delete('/api/sensor/:id', ensureAuth, minLevel('admin'), function(req, re
         return res.status(404).jsonp({ message: "Sensor no encontrado" });
       }
 
-      if ( sensors.length > 1 ) {
-        return res.status(500).jsonp({ message: "Error. Multiples sensores con el mismo ID." });
-      }
+      // if ( sensors.length > 1 ) {
+        // return res.status(500).jsonp({ message: "Error. Multiples sensores con el mismo ID." });
+      // }
 
       request({
           method: 'POST',
