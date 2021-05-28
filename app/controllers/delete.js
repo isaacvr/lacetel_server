@@ -1,8 +1,8 @@
-/**
+﻿/**
  * @author: Isaac Vega Rodriguez          <isaacvega1996@gmail.com>
  */
 
-'use strict';
+'use strict'; // test
 
 /// Dependencies
 var express      = require('express');
